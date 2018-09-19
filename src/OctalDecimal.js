@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet ,TouchableOpacity } from 'react-native';
-import Icon from 'react-native-ionicons'
+import { View, Text, TextInput, StyleSheet ,TouchableOpacity, ScrollView} from 'react-native';
+import IconFA from "react-native-vector-icons/FontAwesome5";
+import IconEn from 'react-native-vector-icons/Entypo';
 
 export default class OctalDecimal extends React.Component {
     constructor(props){
@@ -11,6 +12,10 @@ export default class OctalDecimal extends React.Component {
             decimalOctal: true,
             number: 0,
             result: false,
+            firstNumber:"",
+            secondNumber:"",
+            status:"",
+            value:''
         }
     }
 
@@ -68,13 +73,59 @@ export default class OctalDecimal extends React.Component {
         })
     }
 
+    _plusPressed(){
+        this.setState({
+            status:"A",
+            firstNumber: this.state.number,
+            value: this.state.number+" + "
+        });
+    }
+    _minusPressed(){
+        this.setState({
+            status:"B",
+            firstNumber: this.state.number
+        });
+    }
+    _dividePressed(){
+        this.setState({
+            status:"C",
+            firstNumber: this.state.number
+        });
+    }
+    _multiPressed(){
+        this.setState({
+            status:"D",
+            firstNumber: this.state.number
+        });
+    }
+    _calculatePressed(){
+        switch (this.state.status) {
+            case 'A':
+                this.addBinary(this.state.firstNumber, this.state.number);
+                break;
+            case 'B':
+                alert("minus operation");
+                break;
+            case 'C':
+                alert("divide operation");
+                break;
+            case 'D':
+                alert("last operation");
+                break;
+        }
+        this.setState({
+            value:''
+        })
+    }
 
     render() {
         return (
+
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <TouchableOpacity onPress={()=>this.changeDimension()}>
-                    <Icon name="swap" size={50} />
-                </TouchableOpacity>
+
+                <IconEn.Button name="swap" size={50} backgroundColor="transparent" color="gray"
+                               onPress={()=>this.changeDimension()}/>
+
                 {this.state.decimalOctal?
                     <Text style={{fontSize: 13,color:'#000'}}>Enter Decimal Number:</Text>
                     :
@@ -119,6 +170,28 @@ export default class OctalDecimal extends React.Component {
                         :
                         <Text> </Text>
                 }
+                <View style={{flexDirection: "row",borderTopWidth: 1, borderTopColor:"#000",
+                    width:"100%",justifyContent: "center"}}>
+                    <TextInput
+                        style={styles.inputText}
+                        placeholder={'Input number'}
+                        keyboardType='numeric'
+                        onChangeText={this.handleInputChange}
+                    />
+                </View>
+
+                <View style={{flexDirection: "row", width:"100%",justifyContent: "center"}}>
+                    <IconFA.Button name="plus" size={40} backgroundColor="transparent" color="gray"
+                                   onPress={()=>this._plusPressed()}/>
+                    <IconFA.Button name="minus" size={40} backgroundColor="transparent" color="gray"
+                                   onPress={()=>this._minusPressed()}/>
+                    <IconFA.Button name="divide" size={40} backgroundColor="transparent" color="gray"
+                                   onPress={()=>this._dividePressed()}/>
+                    <IconFA.Button name="star-of-life" size={40} backgroundColor="transparent" color="gray"
+                                   onPress={()=>this._multiPressed()}/>
+                    <IconFA.Button name="equals" size={40} backgroundColor="transparent" color="gray"
+                                   onPress={()=>this._calculatePressed()}/>
+                </View>
             </View>
         );
     }

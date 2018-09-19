@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet ,TouchableOpacity,Picker } from 'react-native';
+import { View, Text, TextInput, StyleSheet ,TouchableOpacity, ScrollView } from 'react-native';
 import IconFA from 'react-native-vector-icons/FontAwesome5';
 import IconEn from 'react-native-vector-icons/Entypo';
 export default class BinaryDecimal extends React.Component {
@@ -140,9 +140,10 @@ export default class BinaryDecimal extends React.Component {
     }
     render() {
         return (
+
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
-                <IconEn.Button name="swap" size={40} backgroundColor="transparent" color="gray"
+                <IconEn.Button name="swap" size={50} backgroundColor="transparent" color="gray"
                                    onPress={()=>this.changeDimension()}/>
 
                 {this.state.decimalBinary?
