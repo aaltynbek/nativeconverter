@@ -15,7 +15,8 @@ export default class SixteenDecimal extends React.Component {
             firstNumber:"",
             secondNumber:"",
             status:"",
-            value:''
+            value:'',
+            operation: false,
         }
     }
 
@@ -118,50 +119,86 @@ export default class SixteenDecimal extends React.Component {
             result: false
         })
     }
-
-    _plusPressed(){
+    addHex(a, b) {
+        let dec;
+        dec = this.hexToDecimal(a)+this.hexToDecimal(b);
         this.setState({
-            status:"A",
-            firstNumber: this.state.number,
-            value: this.state.number+" + "
+            value: this.decimalToHex(dec),
+            operation:true
         });
+    };
+
+    minusHex(a, b) {
+        let dec;
+        dec = this.hexToDecimal(a)-this.hexToDecimal(b);
+        this.setState({
+            value: this.decimalToHex(dec),
+            operation:true
+        });
+    };
+    multHex(a, b) {
+        let dec;
+        dec = this.hexToDecimal(a)*this.hexToDecimal(b);
+        this.setState({
+            value: this.decimalToHex(dec),
+            operation:true
+        });
+    };
+    divHex(a, b) {
+        let dec;
+        dec = this.hexToDecimal(a)/this.hexToDecimal(b);
+        this.setState({
+            value: this.decimalToHex(dec),
+            operation:true
+        });
+    };
+
+
+    handleInputChangeFirst = (text) => {
+        if (/^\d+$/.test(text)) {
+            this.setState({
+                firstNumber: text,
+                result: false
+            });
+        }
+    };
+    handleInputChangeSecond = (text) => {
+        if (/^\d+$/.test(text)) {
+            this.setState({
+                secondNumber: text,
+                result: false
+            });
+        }
+    };
+    _plusPressed(){
+        this.addHex(this.state.firstNumber, this.state.secondNumber);
     }
     _minusPressed(){
-        this.setState({
-            status:"B",
-            firstNumber: this.state.number
-        });
+        this.minusHex(this.state.firstNumber, this.state.secondNumber);
     }
     _dividePressed(){
-        this.setState({
-            status:"C",
-            firstNumber: this.state.number
-        });
+        this.divHex(this.state.firstNumber, this.state.secondNumber);
     }
     _multiPressed(){
-        this.setState({
-            status:"D",
-            firstNumber: this.state.number
-        });
+        this.multHex(this.state.firstNumber, this.state.secondNumber);
     }
+
+
     _calculatePressed(){
         switch (this.state.status) {
             case 'A':
-                this.addBinary(this.state.firstNumber, this.state.number);
+                this.addHex(this.state.firstNumber, this.state.number);
                 break;
             case 'B':
-                alert("minus operation");
+                this.minusHex(this.state.firstNumber, this.state.number);
                 break;
             case 'C':
-                alert("divide operation");
+                this.divHex(this.state.firstNumber, this.state.number);
                 break;
             case 'D':
-                alert("last operation");
+                this.multHex(this.state.firstNumber, this.state.number);
                 break;
         }
-        this.setState({
-            value:''
-        })
     }
 
     render() {
@@ -213,15 +250,24 @@ export default class SixteenDecimal extends React.Component {
                             : this.state.decimalNumber+" "}
                             Hex: {this.state.decimalHex?this.state.hexNumber:this.state.number} </Text>
                         :
-                        <Text> </Text>
+                        <Text style={{fontSize:20,}}> Result</Text>
                 }
                 <View style={{flexDirection: "row",borderTopWidth: 1, borderTopColor:"#000",
                     width:"100%",justifyContent: "center"}}>
                     <TextInput
                         style={styles.inputText}
-                        placeholder={'Input number'}
+                        placeholder={'First number'}
                         keyboardType='numeric'
-                        onChangeText={this.handleInputChange}
+                        onChangeText={this.handleInputChangeFirst}
+                    />
+
+                </View>
+                <View style={{flexDirection: "row", width:"100%",justifyContent: "center"}}>
+                    <TextInput
+                        style={styles.inputText}
+                        placeholder={'Second number'}
+                        keyboardType='numeric'
+                        onChangeText={this.handleInputChangeSecond}
                     />
                 </View>
 
@@ -237,6 +283,11 @@ export default class SixteenDecimal extends React.Component {
                     <IconFA.Button name="equals" size={40} backgroundColor="transparent" color="gray"
                                    onPress={()=>this._calculatePressed()}/>
                 </View>
+                {this.state.operation?
+                    <Text style={{fontSize:20,}}>Result: {this.state.value}</Text>
+                    :
+                    <Text style={{fontSize:20,}}> Result</Text>
+                }
             </View>
         );
     }

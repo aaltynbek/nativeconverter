@@ -15,7 +15,8 @@ export default class OctalDecimal extends React.Component {
             firstNumber:"",
             secondNumber:"",
             status:"",
-            value:''
+            value:'',
+            operation: false,
         }
     }
 
@@ -73,50 +74,86 @@ export default class OctalDecimal extends React.Component {
         })
     }
 
-    _plusPressed(){
+    addOctal(a, b) {
+        let dec;
+        dec = this.octalToDecimal(a)+this.octalToDecimal(b);
         this.setState({
-            status:"A",
-            firstNumber: this.state.number,
-            value: this.state.number+" + "
+            value: this.decimalToOctal(dec),
+            operation:true
         });
+    };
+
+    minusOctal(a, b) {
+        let dec;
+        dec = this.octalToDecimal(a)-this.octalToDecimal(b);
+        this.setState({
+            value: this.decimalToOctal(dec),
+            operation:true
+        });
+    };
+    multOctal(a, b) {
+        let dec;
+        dec = this.octalToDecimal(a)*this.octalToDecimal(b);
+        this.setState({
+            value: this.decimalToOctal(dec),
+            operation:true
+        });
+    };
+    divOctal(a, b) {
+        let dec;
+        dec = this.octalToDecimal(a)/this.octalToDecimal(b);
+        this.setState({
+            value: this.decimalToOctal(dec),
+            operation:true
+        });
+    };
+
+    handleInputChangeFirst = (text) => {
+        if (/^\d+$/.test(text)) {
+            this.setState({
+                firstNumber: text,
+                result: false
+            });
+        }
+    };
+    handleInputChangeSecond = (text) => {
+        if (/^\d+$/.test(text)) {
+            this.setState({
+                secondNumber: text,
+                result: false
+            });
+        }
+    };
+    _plusPressed(){
+        this.addOctal(this.state.firstNumber, this.state.secondNumber);
     }
     _minusPressed(){
-        this.setState({
-            status:"B",
-            firstNumber: this.state.number
-        });
+        this.minusOctal(this.state.firstNumber, this.state.secondNumber);
     }
     _dividePressed(){
-        this.setState({
-            status:"C",
-            firstNumber: this.state.number
-        });
+        this.divOctal(this.state.firstNumber, this.state.secondNumber);
     }
     _multiPressed(){
-        this.setState({
-            status:"D",
-            firstNumber: this.state.number
-        });
+        this.multOctal(this.state.firstNumber, this.state.secondNumber);
     }
+
     _calculatePressed(){
         switch (this.state.status) {
             case 'A':
-                this.addBinary(this.state.firstNumber, this.state.number);
+                this.addOctal(this.state.firstNumber, this.state.number);
                 break;
             case 'B':
-                alert("minus operation");
+                this.minusOctal(this.state.firstNumber, this.state.number);
                 break;
             case 'C':
-                alert("divide operation");
+                this.divOctal(this.state.firstNumber, this.state.number);
                 break;
             case 'D':
-                alert("last operation");
+                this.multOctal(this.state.firstNumber, this.state.number);
                 break;
         }
-        this.setState({
-            value:''
-        })
     }
+
 
     render() {
         return (
@@ -168,15 +205,24 @@ export default class OctalDecimal extends React.Component {
                             : this.state.decimalNumber+" "}
                             Octal: {this.state.decimalOctal?this.state.octalNumber:this.state.number} </Text>
                         :
-                        <Text> </Text>
+                        <Text style={{fontSize:20,}}> Result</Text>
                 }
                 <View style={{flexDirection: "row",borderTopWidth: 1, borderTopColor:"#000",
                     width:"100%",justifyContent: "center"}}>
                     <TextInput
                         style={styles.inputText}
-                        placeholder={'Input number'}
+                        placeholder={'First number'}
                         keyboardType='numeric'
-                        onChangeText={this.handleInputChange}
+                        onChangeText={this.handleInputChangeFirst}
+                    />
+
+                </View>
+                <View style={{flexDirection: "row", width:"100%",justifyContent: "center"}}>
+                    <TextInput
+                        style={styles.inputText}
+                        placeholder={'Second number'}
+                        keyboardType='numeric'
+                        onChangeText={this.handleInputChangeSecond}
                     />
                 </View>
 
@@ -192,6 +238,11 @@ export default class OctalDecimal extends React.Component {
                     <IconFA.Button name="equals" size={40} backgroundColor="transparent" color="gray"
                                    onPress={()=>this._calculatePressed()}/>
                 </View>
+                {this.state.operation?
+                    <Text style={{fontSize:20,}}>Result: {this.state.value}</Text>
+                    :
+                    <Text style={{fontSize:20,}}> Result</Text>
+                }
             </View>
         );
     }

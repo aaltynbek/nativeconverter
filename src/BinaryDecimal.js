@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet ,TouchableOpacity, ScrollView } from 'react-native';
 import IconFA from 'react-native-vector-icons/FontAwesome5';
 import IconEn from 'react-native-vector-icons/Entypo';
+
 export default class BinaryDecimal extends React.Component {
     constructor(props){
         super(props);
@@ -14,7 +15,8 @@ export default class BinaryDecimal extends React.Component {
             firstNumber:"",
             secondNumber:"",
             status:"",
-            value:''
+            value:"",
+            operation: false,
         }
     }
 
@@ -61,6 +63,7 @@ export default class BinaryDecimal extends React.Component {
         }
     };
 
+
     /* Converter reversing */
 
     changeDimension(){
@@ -82,61 +85,95 @@ export default class BinaryDecimal extends React.Component {
         while(i >= 0 || j >= 0) {
             let m = i < 0 ? 0 : a[i] | 0;
             let n = j < 0 ? 0 : b[j] | 0;
-            carry += m + n; // sum of two digits
-            result = carry % 2 + result; // string concat
-            carry = carry / 2 | 0; // remove decimals,  1 / 2 = 0.5, only get 0
+            carry += m + n;
+            result = carry % 2 + result;
+            carry = carry / 2 | 0;
             i--;
             j--;
         }
         if(carry !== 0) {
             result = carry + result;
         }
-        alert(result);
+        this.setState({
+            value: result,
+            operation:true
+        });
         return result;
     };
-    _plusPressed(){
+
+    /* Binary - Binary */
+
+    minusBinary(a, b) {
+        let dec;
+        dec = this.binaryToDecimal(a)-this.binaryToDecimal(b);
         this.setState({
-            status:"A",
-            firstNumber: this.state.number,
-            value: this.state.number+" + "
+            value: this.decimalToBinary(dec),
+            operation:true
         });
+    };
+    multBinary(a, b) {
+        let dec;
+        dec = this.binaryToDecimal(a)*this.binaryToDecimal(b);
+        this.setState({
+            value: this.decimalToBinary(dec),
+            operation:true
+        });
+    };
+    divBinary(a, b) {
+        let dec;
+        dec = this.binaryToDecimal(a)/this.binaryToDecimal(b);
+        this.setState({
+            value: this.decimalToBinary(dec),
+            operation:true
+        });
+    };
+
+
+
+    handleInputChangeFirst = (text) => {
+        if (/^\d+$/.test(text)) {
+            this.setState({
+                firstNumber: text,
+                result: false
+            });
+        }
+    };
+    handleInputChangeSecond = (text) => {
+        if (/^\d+$/.test(text)) {
+            this.setState({
+                secondNumber: text,
+                result: false
+            });
+        }
+    };
+    _plusPressed(){
+        this.addBinary(this.state.firstNumber, this.state.secondNumber);
     }
     _minusPressed(){
-        this.setState({
-            status:"B",
-            firstNumber: this.state.number
-        });
+        this.minusBinary(this.state.firstNumber, this.state.secondNumber);
     }
     _dividePressed(){
-        this.setState({
-            status:"C",
-            firstNumber: this.state.number
-        });
+        this.divBinary(this.state.firstNumber, this.state.secondNumber);
     }
     _multiPressed(){
-        this.setState({
-            status:"D",
-            firstNumber: this.state.number
-        });
+        this.multBinary(this.state.firstNumber, this.state.secondNumber);
     }
+
     _calculatePressed(){
         switch (this.state.status) {
             case 'A':
                 this.addBinary(this.state.firstNumber, this.state.number);
                 break;
             case 'B':
-                alert("minus operation");
+                this.minusBinary(this.state.firstNumber, this.state.number);
                 break;
             case 'C':
-                alert("divide operation");
+                this.divBinary(this.state.firstNumber, this.state.number);
                 break;
             case 'D':
-                alert("last operation");
+                this.multBinary(this.state.firstNumber, this.state.number);
                 break;
         }
-        this.setState({
-            value:''
-        })
     }
     render() {
         return (
@@ -180,33 +217,47 @@ export default class BinaryDecimal extends React.Component {
                 </TouchableOpacity>
                 {
                     this.state.result?
-                        <Text style={{fontSize:17,}}>Decimal: {this.state.decimalBinary?this.state.number+" ":this.state.decimalNumber+" "}
+                        <Text style={{fontSize:20,}}>Decimal: {this.state.decimalBinary?this.state.number+" ":this.state.decimalNumber+" "}
                          Binary: {this.state.decimalBinary?this.state.binaryNumber:this.state.number} </Text>
                         :
-                        <Text> </Text>
+                        <Text style={{fontSize:20,}}>Result</Text>
                 }
                 <View style={{flexDirection: "row",borderTopWidth: 1, borderTopColor:"#000",
                     width:"100%",justifyContent: "center"}}>
                     <TextInput
                         style={styles.inputText}
-                        placeholder={'Input number'}
+                        placeholder={'First number'}
                         keyboardType='numeric'
-                        onChangeText={this.handleInputChange}
+                        onChangeText={this.handleInputChangeFirst}
                         />
+
+                </View>
+                <View style={{flexDirection: "row", width:"100%",justifyContent: "center"}}>
+                    <TextInput
+                        style={styles.inputText}
+                        placeholder={'Second number'}
+                        keyboardType='numeric'
+                        onChangeText={this.handleInputChangeSecond}
+                    />
                 </View>
 
                 <View style={{flexDirection: "row", width:"100%",justifyContent: "center"}}>
-                    <IconFA.Button name="plus" size={40} backgroundColor="transparent" color="gray"
-                               onPress={()=>this._plusPressed()}/>
-                    <IconFA.Button name="minus" size={40} backgroundColor="transparent" color="gray"
-                                   onPress={()=>this._minusPressed()}/>
-                    <IconFA.Button name="divide" size={40} backgroundColor="transparent" color="gray"
-                                   onPress={()=>this._dividePressed()}/>
-                    <IconFA.Button name="star-of-life" size={40} backgroundColor="transparent" color="gray"
-                                   onPress={()=>this._multiPressed()}/>
-                    <IconFA.Button name="equals" size={40} backgroundColor="transparent" color="gray"
-                                   onPress={()=>this._calculatePressed()}/>
+                        <IconFA.Button name="plus" size={40} backgroundColor="transparent" color="gray"
+                                       onPress={()=>this._plusPressed()}/>
+                        <IconFA.Button name="minus" size={40} backgroundColor="transparent" color="gray"
+                                       onPress={()=>this._minusPressed()}/>
+                        <IconFA.Button name="divide" size={40} backgroundColor="transparent" color="gray"
+                                       onPress={()=>this._dividePressed()}/>
+                        <IconFA.Button name="star-of-life" size={40} backgroundColor="transparent" color="gray"
+                                       onPress={()=>this._multiPressed()}/>
+                        <IconFA.Button name="equals" size={40} backgroundColor="transparent" color="gray"
+                                       onPress={()=>this._calculatePressed()}/>
                 </View>
+                {this.state.operation?
+                    <Text style={{fontSize:20,}}>Result: {this.state.value}</Text>
+                    :
+                    <Text style={{fontSize:20,}}> Result</Text>
+                }
 
             </View>
         );
