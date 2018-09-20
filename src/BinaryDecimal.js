@@ -31,7 +31,6 @@ export default class BinaryDecimal extends React.Component {
         }
         this.setState({
             binaryNumber: binaryNumber,
-            result: true
         });
         return binaryNumber;
     }
@@ -47,7 +46,6 @@ export default class BinaryDecimal extends React.Component {
         }
         this.setState({
             decimalNumber: decimalNumber,
-            result: true
         });
         return decimalNumber;
     }
@@ -209,8 +207,19 @@ export default class BinaryDecimal extends React.Component {
                 }
                 <TouchableOpacity style={styles.button}
                 onPress={()=>{
-                     if(this.state.decimalBinary){this.decimalToBinary(this.state.number)}
-                else {this.binaryToDecimal(this.state.number)}
+                     if(this.state.decimalBinary)
+                     	{
+                     		this.decimalToBinary(this.state.number);
+                     		this.setState({
+					            result: true
+        					});
+                     	}
+                else {
+                	this.binaryToDecimal(this.state.number)
+                	this.setState({
+					            result: true
+        			});
+            	}
                 }}
                 >
                     <Text style={styles.buttonText}>Convert</Text>
