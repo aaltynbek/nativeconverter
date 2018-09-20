@@ -60,10 +60,10 @@ export const Converter = createBottomTabNavigator(
                 ),
             }
         },
-        Sixteen: {
+        Hexadecimal: {
             screen: Sixteen,
             navigationOptions:( {
-                drawerLabel: "Hexa",
+                drawerLabel: "Hexadecimal",
                 tabBarIcon: ({ tintColor }) => (
                     <Image
                         source={require('./images/sixteen.png')}

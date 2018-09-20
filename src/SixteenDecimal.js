@@ -50,7 +50,6 @@ export default class SixteenDecimal extends React.Component {
         }
         this.setState({
             hexNumber: hexNumber,
-            result: true
         });
         return hexNumber;
     }
@@ -88,7 +87,6 @@ export default class SixteenDecimal extends React.Component {
 
         this.setState({
             decimalNumber: decimalNumber,
-            result: true
         });
         return decimalNumber;
     }
@@ -235,10 +233,16 @@ export default class SixteenDecimal extends React.Component {
                 <TouchableOpacity style={styles.button}
                                   onPress={()=>{
                                       if(this.state.decimalHex) {
-                                          this.decimalToHex(this.state.number)
+                                          this.decimalToHex(this.state.number);
+                                          this.setState({
+                                              result: true
+                                          });
                                       }
                                       else {
-                                          this.hexToDecimal(this.state.number)
+                                          this.hexToDecimal(this.state.number);
+                                          this.setState({
+                                              result: true
+                                          });
                                       }
                                   }}
                 >

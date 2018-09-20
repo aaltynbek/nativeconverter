@@ -31,7 +31,6 @@ export default class OctalDecimal extends React.Component {
         }
         this.setState({
             octalNumber: octalNumber,
-            result: true
         });
         return octalNumber;
     }
@@ -47,7 +46,6 @@ export default class OctalDecimal extends React.Component {
         }
         this.setState({
             decimalNumber: decimalNumber,
-            result: true
         });
         return decimalNumber;
     }
@@ -75,10 +73,29 @@ export default class OctalDecimal extends React.Component {
     }
 
     addOctal(a, b) {
-        let dec;
-        dec = this.octalToDecimal(a)+this.octalToDecimal(b);
+        let i=0;
+        let length= (a.length>b.length)? a.length:b.length;
+        let result="";
+        let carry=0;
+        a = a.split("").reverse().join("");
+        b = b.split("").reverse().join("");
+
+        while(a.length>b.length || a.length<b.length){
+            (a.length>b.length)?b=b+'0':a=a+'0';
+        }
+
+        while(i<length){
+            if((parseInt(a[i]) + parseInt(b[i]))<8){
+                result = (parseInt(a[i]) + parseInt(b[i]) + carry) + result;
+            }
+            else{
+                result = ((parseInt(a[i]) + parseInt(b[i]) + carry)%8) + result;
+                carry = 1;
+            }
+            i++;
+        }
         this.setState({
-            value: this.decimalToOctal(dec),
+            value: result,
             operation:true
         });
     };
@@ -86,10 +103,18 @@ export default class OctalDecimal extends React.Component {
     minusOctal(a, b) {
         let dec;
         dec = this.octalToDecimal(a)-this.octalToDecimal(b);
-        this.setState({
-            value: this.decimalToOctal(dec),
-            operation:true
-        });
+        if(dec !== 0) {
+            this.setState({
+                value: this.decimalToOctal(dec),
+                operation: true
+            });
+        }
+        else {
+            this.setState({
+                value: '0',
+                operation: true
+            });
+        }
     };
     multOctal(a, b) {
         let dec;
@@ -190,10 +215,16 @@ export default class OctalDecimal extends React.Component {
                 <TouchableOpacity style={styles.button}
                                   onPress={()=>{
                                       if(this.state.decimalOctal) {
-                                          this.decimalToOctal(this.state.number)
+                                          this.decimalToOctal(this.state.number);
+                                          this.setState({
+                                              result: true
+                                          });
                                       }
                                       else {
-                                          this.octalToDecimal(this.state.number)
+                                          this.octalToDecimal(this.state.number);
+                                          this.setState({
+                                              result: true
+                                          });
                                       }
                                   }}
                 >
