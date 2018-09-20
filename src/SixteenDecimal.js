@@ -60,26 +60,31 @@ export default class SixteenDecimal extends React.Component {
         let decimalNumber = 0;
         let power = hexNumber.length - 1;
         for (let i = 0; i < hexNumber.length; i++) {
-            if(hexNumber[i]=="A"){
-                hexNumber[i]=10 ;
-            }
-            if(hexNumber[i]=="B"){
-                hexNumber[i]=11;
-            }
-            if(hexNumber[i]=="C"){
-                hexNumber[i]=12;
-            }
-            if(hexNumber[i]=="D"){
-                hexNumber[i]=13;
-            }
-            if(hexNumber[i]=="E"){
-                hexNumber[i]=14;
-            }
-            if(hexNumber[i]=="F"){
-                hexNumber[i]=15;
-            }
-            decimalNumber += parseInt(hexNumber[i]) * Math.pow(16, power - i);
+           if(hexNumber[i]>='0' && hexNumber[i]<='9'){
+               decimalNumber += parseInt(hexNumber[i]) * Math.pow(16, power - i);
+           }
+           else if(hexNumber[i]==='A' || hexNumber[i]==='a' ){
+               decimalNumber += 10 * Math.pow(16, power - i);
+           }
+           else if(hexNumber[i]==='B' || hexNumber[i]==='b'){
+               decimalNumber += 11 * Math.pow(16, power - i);
+           }
+           else if(hexNumber[i]==='C' || hexNumber[i]==='c'){
+               decimalNumber += 12 * Math.pow(16, power - i);
+           }
+           else if(hexNumber[i]==='D' || hexNumber[i]==='d'){
+               decimalNumber += 13 * Math.pow(16, power - i);
+           }
+           else if(hexNumber[i]==='E' || hexNumber[i]==='e'){
+               decimalNumber += 14 * Math.pow(16, power - i);
+           }
+           else if(hexNumber[i]==='F' || hexNumber[i]==='f'){
+               decimalNumber += 15 * Math.pow(16, power - i);
+           }
+
+
         }
+
         this.setState({
             decimalNumber: decimalNumber,
             result: true
